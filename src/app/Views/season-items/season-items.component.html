@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="col-4" *ngFor="let item of SeasonalItems">
+        <div class="field-checkbox">
+            <p-checkbox [(ngModel)]="item.isCollected" [binary]="true" inputId="binary"
+                (onChange)="UpdateFarmItem(item)"></p-checkbox>
+            <label *ngIf="item.seasons.length == 4" for="binary" class="mx-2"
+                pTooltip="{{item.collection.name}} {{item.bundle.name}} - {{item.location}}"><b>                                            
+                    <span
+                    [ngStyle]="item.isNotNeeded ? {'text-decoration' : 'line-through'} : {'text-decoration' : 'none'}">
+                    {{item.name}}
+                </span></b></label>
+            <label *ngIf="item.seasons.length < 4" for="binary" class="mx-2"
+                pTooltip="{{item.collection.name}} {{item.bundle.name}} - {{item.location}}"><b>                                            
+                    <span
+                    [ngStyle]="item.isNotNeeded ? {'text-decoration' : 'line-through'} : {'text-decoration' : 'none'}">
+                    {{item.name}}
+                </span></b> - <span
+                    *ngFor="let season of item.seasons">{{season.name}} </span></label>
+        </div>
+    </div>
+</div>

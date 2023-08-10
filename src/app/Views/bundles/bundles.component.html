@@ -1,0 +1,105 @@
+<div class="container">
+    <div class="text-center row">
+        <div class="col-4 offset-4">
+            <img src="../../../assets/StardewValleyLogo.png">
+        </div>
+    </div>
+    <h5>Select Farm</h5>
+    <p-dropdown [options]="Farms" [(ngModel)]="SelectedFarm" optionLabel="name"
+        (onChange)="FarmSelected()"></p-dropdown>
+
+
+    <div *ngIf="ShowCollection">
+
+        <div class="my-5">
+            <button *ngFor="let tab of Tabs" class="tabMenuBtn" (click)="ToggleTabs(tab)"
+                [ngClass]="{'active': SelectedTab == tab}">{{tab}}</button>
+        </div>
+
+        <div *ngIf="SelectedTab == Tabs[0]">
+            <p-accordion [multiple]="true">
+                <p-accordionTab header="{{collection.name}} - {{collection.reward}}" *ngFor="let collection of Collections"> 
+                    <div class="row">
+                        <div class="col-4" *ngFor="let bundle of collection.bundles">
+                            <h5 [ngStyle]="bundle.isComplete ? {'color': 'green'} : {'color': '#4D4D4D'}" class="my-3"
+                                pTooltip="{{bundle.numberRequired}} Required" tooltipPosition="left">
+                                {{bundle.name}}</h5>
+
+                            <div *ngFor="let item of bundle.items">
+                                <div class="field-checkbox">
+                                    <p-checkbox [(ngModel)]="item.isCollected" [binary]="true" inputId="binary"
+                                        (onChange)="UpdateFarmItem(item, bundle.id)"></p-checkbox>
+
+                                    <label *ngIf="item.seasons.length == 4" for="binary" class="mx-2"
+                                        pTooltip="{{item.location}}"><b>
+                                            <span
+                                                [ngStyle]="item.isNotNeeded ? {'text-decoration' : 'line-through'} : {'text-decoration' : 'none'}">
+                                                {{item.name}}
+                                            </span></b></label>
+
+                                    <label *ngIf="item.seasons.length < 4" for="binary" class="mx-2"
+                                        pTooltip="{{item.location}}"><b> <span
+                                                [ngStyle]="item.isNotNeeded ? {'text-decoration' : 'line-through'} : {'text-decoration' : 'none'}">
+                                                {{item.name}}
+                                            </span></b> - <span *ngFor="let season of item.seasons">{{season.name}}
+                                        </span></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </p-accordionTab>
+            </p-accordion>
+        </div>
+
+        <div *ngIf="SelectedTab == Tabs[1]" class="mt-3 mb-5">
+            <h4>Spring</h4>
+            <app-season-items [SelectedFarm]="SelectedFarm" [SeasonalItems]="SpringItems"></app-season-items>
+            <hr>
+            <h4>Summer</h4>
+            <app-season-items [SelectedFarm]="SelectedFarm" [SeasonalItems]="SummerItems"></app-season-items>
+            <hr>
+            <h4>Fall</h4>
+            <app-season-items [SelectedFarm]="SelectedFarm" [SeasonalItems]="FallItems"></app-season-items>
+            <hr>
+            <h4>Winter</h4>
+            <app-season-items [SelectedFarm]="SelectedFarm" [SeasonalItems]="WinterItems"></app-season-items>
+            <hr>
+            <h4>All Seasons</h4>
+            <app-season-items [SelectedFarm]="SelectedFarm" [SeasonalItems]="AllSeasonItems"></app-season-items>
+            <hr>
+        </div>
+
+
+        <div *ngIf="SelectedTab == Tabs[2]">
+            <div class="row">
+                <div class="col-3" *ngFor="let item of RemainingItems">
+                    <div class="field-checkbox">
+                        <p-checkbox [(ngModel)]="item.isCollected" [binary]="true" inputId="binary"
+                            (onChange)="UpdateFarmItem(item, item.bundle.id)"></p-checkbox>
+
+                        <label *ngIf="item.seasons.length == 4" for="binary" class="mx-2"
+                            pTooltip="{{item.collection.name}} {{item.bundle.name}} - {{item.location}}"><b>
+                                <span
+                                    [ngStyle]="item.isNotNeeded ? {'text-decoration' : 'line-through'} : {'text-decoration' : 'none'}">
+                                    {{item.name}}
+                                </span></b></label>
+
+                        <label *ngIf="item.seasons.length < 4" for="binary" class="mx-2"
+                            pTooltip="{{item.collection.name}} {{item.bundle.name}} - {{item.location}}"><b> <span
+                                    [ngStyle]="item.isNotNeeded ? {'text-decoration' : 'line-through'} : {'text-decoration' : 'none'}">
+                                    {{item.name}}
+                                </span></b> - <span *ngFor="let season of item.seasons">{{season.name}} </span></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<p-dialog header="Loading..." [(visible)]="ShowSpinner" [style]="{width: '10vw'}">
+    <div class="text-center">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</p-dialog>
